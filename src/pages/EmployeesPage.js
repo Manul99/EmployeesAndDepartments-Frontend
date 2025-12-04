@@ -23,6 +23,7 @@ export default function EmployeesPage(){
 
   useEffect(()=> { load(); loadDeps(); }, []);
 
+  // Load employees from API
   async function load(){
     try {
       const data = await getEmployees();
@@ -43,6 +44,7 @@ export default function EmployeesPage(){
     }
   }
 
+  // Load departments for select options
 async function loadDeps(){
   try {
     const ds = await getDepartments();
@@ -55,7 +57,7 @@ async function loadDeps(){
   }
 }
 
-
+// Add new employee
   function onAddClick(){
     setEditingId(null);
     setForm({ numEmployeeId:0, varFirstName:"", varLastName:"", varEmail:"", dteDateOfBirth:"", numSalary:"", numDepatmentId:"" });
@@ -63,6 +65,7 @@ async function loadDeps(){
     setError("");
   }
 
+  // Edit employee
   function onEdit(row){
     setEditingId(row.numEmployeeId);
     setForm({
@@ -77,6 +80,7 @@ async function loadDeps(){
     setShowForm(true);
   }
 
+  // Delete employee
   async function onDelete(row){
     if (!window.confirm("Delete this employee?")) return;
     try {
@@ -87,11 +91,13 @@ async function loadDeps(){
     }
   }
 
+  // Handle form field changes
   function handleChange(e){
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   }
 
+  // Calculate age according to DOB
   function calcAgeFromDob(dobIso){
     if (!dobIso) return "";
     const dob = new Date(dobIso);
@@ -102,6 +108,7 @@ async function loadDeps(){
     return age;
   }
 
+  // Form submission
   async function handleSubmit(e){
     e.preventDefault();
     setError("");
@@ -138,10 +145,11 @@ async function loadDeps(){
     }
   }
 
+  // Table columns definition
   const columns = [
     { key: "name", title: "Name", dataIndex: "varFirstName", render: r => `${r.varFirstName} ${r.varLastName}` },
     { key: "email", title: "Email", dataIndex: "varEmail" },
-    { key: "dob", title: "DOB", dataIndex: "dteDateOfBirth", render: r => r.dteDateOfBirth ? new Date(r.dteDateOfBirth).toLocaleDateString() : "" },
+    { key: "dob", title: "DOB", dataIndex: "dteDateOfBirth", render: r => r.dteDateOfBirth ? new Date(r.dteDateOfBirth).toISOString().slice(0,10) : "" },
     { key: "age", title: "Age", dataIndex: "numAge" },
     { key: "salary", title: "Salary", dataIndex: "numSalary" },
     { key: "dept", title: "Department", dataIndex: "numDepatmentId", render: r => {

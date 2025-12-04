@@ -13,6 +13,7 @@ export default function DepartmentsPage(){
   const [form, setForm] = useState({ varDepartmentCode: "", varDepartmentName: "", numDepatmentId: 0 });
   const [error, setError] = useState("");
 
+  // Initial data load
   useEffect(() => {
   const fetchData = async () => {
     await load();
@@ -20,12 +21,11 @@ export default function DepartmentsPage(){
   fetchData();
 }, []);
 
+// Load departments from API
   async function load(){
     setLoading(true);
     try {
       const data = await getDepartments();
-      // Normalize keys from backend if needed
-      console.log("department",data);
       setDepartments((data || []).map(d => ({
         key: d.numDepatmentId ?? d.departmentId ?? d.DepartmentId,
         numDepatmentId: d.numDepatmentId ?? d.departmentId ?? d.DepartmentId,
@@ -39,6 +39,7 @@ export default function DepartmentsPage(){
     } finally { setLoading(false); }
   }
 
+  // Add new department
   function onAddClick(){
     setEditingId(null);
     setForm({ varDepartmentCode: "", varDepartmentName: "", numDepatmentId: 0 });
@@ -46,6 +47,7 @@ export default function DepartmentsPage(){
     setError("");
   }
 
+  // Edit department
   function onEdit(row){
     setEditingId(row.numDepatmentId);
     setForm({ varDepartmentCode: row.varDepartmentCode, varDepartmentName: row.varDepartmentName, numDepatmentId: row.numDepatmentId });
@@ -53,6 +55,7 @@ export default function DepartmentsPage(){
     setError("");
   }
 
+  // Delete department
   async function onDelete(row){
     if (!window.confirm("Delete this department?")) return;
     try {
@@ -63,11 +66,13 @@ export default function DepartmentsPage(){
     }
   }
 
+  // Handle form field changes
   function handleChange(e){
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   }
 
+  // Form submission
   async function handleSubmit(e){
     e.preventDefault();
     setError("");
@@ -99,10 +104,11 @@ export default function DepartmentsPage(){
     }
   }
 
+  // Table columns definition
   const columns = [
     { key: "code", title: "Code", dataIndex: "varDepartmentCode" },
     { key: "name", title: "Name", dataIndex: "varDepartmentName" },
-    { key: "created", title: "Created", dataIndex: "dteCreatedAt", render: r => r.dteCreatedAt ? new Date(r.dteCreatedAt).toLocaleString() : "" }
+    { key: "created", title: "Created", dataIndex: "dteCreatedAt", render: r => r.dteCreatedAt ? new Date(r.dteCreatedAt).toISOString().slice(0,10) : "" }
   ];
 
   return (
