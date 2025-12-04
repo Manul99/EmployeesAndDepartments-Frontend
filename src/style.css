@@ -1,0 +1,37 @@
+body {
+  background: linear-gradient(120deg, #f6f9ff 0%, #fff7f2 100%);
+  min-height: 100vh;
+}
+.page-card {
+  background: white;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 6px 18px rgba(20,20,40,0.06);
+}
+.header-brand {
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.05);
+}
+.add-btn {
+  background: linear-gradient(90deg,#6dd3ff,#6ef3b4);
+  border: none;
+  color: #04243e;
+}
+.edit-btn {
+  background: linear-gradient(90deg,#ffd36e,#ff9aae);
+  border: none;
+  color: #04243e;
+}
+.delete-btn {
+  background: linear-gradient(90deg,#ff7b7b,#ffb3b3);
+  border: none;
+  color: #04243e;
+}
+.form-card {
+  border-left: 6px solid #6dd3ff;
+}
+.small-muted {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
