@@ -21,6 +21,9 @@ export default function EmployeesPage(){
   });
   const [error, setError] = useState("");
 
+   const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 8;
+
   useEffect(()=> { load(); loadDeps(); }, []);
 
   // Load employees from API
@@ -145,6 +148,15 @@ async function loadDeps(){
     }
   }
 
+     // Pagination controls
+ // Pagination controls
+const indexOfLastRecord = currentPage * pageSize;
+const indexOfFirstRecord = indexOfLastRecord - pageSize;
+const currentRecords = employees.slice(indexOfFirstRecord, indexOfLastRecord);
+const totalPages = Math.ceil(employees.length / pageSize);
+const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+
   // Table columns definition
   const columns = [
     { key: "name", title: "Name", dataIndex: "varFirstName", render: r => `${r.varFirstName} ${r.varLastName}` },
@@ -163,19 +175,34 @@ async function loadDeps(){
       <ToastContainer position="top-right" />
       <h3 className="mb-3">Employees</h3>
 
-      {!showForm && (
-        <RecordTable
-          title="Employees"
-          columns={columns}
-          data={employees}
-          onAdd={onAddClick}
-          renderRowActions={(row)=> (
-            <>
-              <button className="btn btn-sm edit-btn me-2" onClick={()=> onEdit(row)}>Edit</button>
-              <button className="btn btn-sm delete-btn" onClick={()=> onDelete(row)}>Delete</button>
-            </>
-          )}
-        />
+        {!showForm && (
+        <>
+          <RecordTable
+            title="Employees"
+            columns={columns}
+            data={currentRecords} // Only current page records
+            onAdd={onAddClick}
+            renderRowActions={(row) => (
+              <>
+                <button className="btn btn-sm edit-btn me-2" onClick={() => onEdit(row)}>Edit</button>
+                <button className="btn btn-sm delete-btn" onClick={() => onDelete(row)}>Delete</button>
+              </>
+            )}
+          />
+
+          {/* Pagination */}
+          <div className="d-flex justify-content-center mt-3">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                className={`btn btn-sm me-1 ${currentPage === i + 1 ? "btn-primary" : "btn-secondary"}`}
+                onClick={() => paginate(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        </>
       )}
 
       {showForm && (
