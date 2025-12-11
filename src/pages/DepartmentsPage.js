@@ -13,6 +13,9 @@ export default function DepartmentsPage(){
   const [form, setForm] = useState({ varDepartmentCode: "", varDepartmentName: "", numDepatmentId: 0 });
   const [error, setError] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 8;
+
   // Initial data load
   useEffect(() => {
   const fetchData = async () => {
@@ -104,6 +107,14 @@ export default function DepartmentsPage(){
     }
   }
 
+    // Pagination controls
+  const indexOfLastRecord = currentPage * pageSize;
+  const indexOfFirstRecord = indexOfLastRecord - pageSize;
+  const currentRecords = departments.slice(indexOfFirstRecord, indexOfLastRecord);
+  const totalPages = Math.ceil(departments.length / pageSize);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   // Table columns definition
   const columns = [
     { key: "code", title: "Code", dataIndex: "varDepartmentCode" },
@@ -116,19 +127,33 @@ export default function DepartmentsPage(){
       <ToastContainer position="top-right" />
       <h3 className="mb-3">Departments</h3>
 
-      {!showForm && (
-        <RecordTable
-          title="Departments"
-          columns={columns}
-          data={departments}
-          onAdd={onAddClick}
-          renderRowActions={(row)=> (
-            <>
-              <button className="btn btn-sm edit-btn me-2" onClick={()=> onEdit(row)}>Edit</button>
-              <button className="btn btn-sm delete-btn" onClick={()=> onDelete(row)}>Delete</button>
-            </>
-          )}
-        />
+        {!showForm && (
+        <>
+          <RecordTable
+            title="Departments"
+            columns={columns}
+            data={currentRecords}
+            onAdd={onAddClick}
+            renderRowActions={(row) => (
+              <>
+                <button className="btn btn-sm edit-btn me-2" onClick={() => onEdit(row)}>Edit</button>
+                <button className="btn btn-sm delete-btn" onClick={() => onDelete(row)}>Delete</button>
+              </>
+            )}
+          />
+          {/* Pagination */}
+          <div className="d-flex justify-content-center mt-3">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                className={`btn btn-sm me-1 ${currentPage === i + 1 ? "btn-primary" : "btn-secondary"}`}
+                onClick={() => paginate(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        </>
       )}
 
       {showForm && (
